@@ -43,7 +43,18 @@
   <script src="static/js/bulma-carousel.min.js"></script>
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
-</head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  * {box-sizing: border-box;}.column_video {float: left;
+    width: 50%;
+    padding: 10px;}
+
+  /* Clear floats after the columns */
+  .row:after {content: "";
+    display: table;
+    clear: both;}
+  </style>
+  </head>
 <body>
 
 
@@ -126,21 +137,29 @@
 
 
 <!-- Teaser video-->
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <video poster="" id="tree" autoplay controls muted loop height="100%">
-        <!-- Your video here -->
-        <source src="static/videos/banner_video.mp4"
-        type="video/mp4">
-      </video>
-      <h2 class="subtitle has-text-centered">
-        Aliquam vitae elit ullamcorper tellus egestas pellentesque. Ut lacus tellus, maximus vel lectus at, placerat pretium mi. Maecenas dignissim tincidunt vestibulum. Sed consequat hendrerit nisl ut maximus. 
-      </h2>
-    </div>
+<div class="row">
+  <div class="column_video">
+    <video poster="" id="tree" autoplay controls muted loop height="100%">
+      <!-- Your video here -->
+      <source src="static/videos/banner_video.mp4"
+      type="video/mp4">
+    </video>
+    <h2 class="subtitle has-text-centered">
+      Examples of a robot navigating through environments with different difficulty levels.
+    </h2>
   </div>
-</section>
-<!-- End teaser video -->
+  <div class="column_video">
+    <video poster="" id="tree" autoplay controls muted loop height="100%">
+      <!-- Your video here -->
+      <source src="static/videos/banner_video.mp4"
+      type="video/mp4">
+    </video>
+    <h2 class="subtitle has-text-centered">
+      Examples of a robot navigating through environments with different difficulty levels.
+    </h2>
+  </div>
+</div>
+
 
 <!-- Paper abstract -->
 <section class="section hero is-light">
