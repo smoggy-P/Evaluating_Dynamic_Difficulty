@@ -54,6 +54,37 @@
     display: table;
     clear: both;}
   </style>
+  <style>
+    canvas {
+        border: 1px solid black;
+        width: 100%;
+        display: block;
+    }
+    .input-label {
+      font-size: 18px;
+  }
+
+  .input-field {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+  }
+
+  .button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+  }
+
+  .result {
+      font-size: 18px;
+      margin-top: 20px;
+  }
+  </style>
   </head>
 <body>
 
@@ -181,42 +212,133 @@
 </section>
 <!-- End paper abstract -->
 
-
-<!-- Image carousel -->
-<!-- <section class="hero is-small">
+<section class="hero is-small is-light">
   <div class="hero-body">
     <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-       <div class="item">
-        <img src="static/images/carousel1.jpg" alt="MY ALT TEXT"/>
-        <h2 class="subtitle has-text-centered">
-          First image description.
-        </h2>
+      <!-- Paper video. -->
+      <h2 class="title is-3">Obstacle Environment Generator</h2>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <div class="row">
+            <div class="column_video">
+          <canvas id="mapCanvas"></canvas>
+          </div>
+          <div class="column_video">
+              <label class="input-label" for="yInput">Desired Survivability Metric(0-10):</label>
+              <input class="input-field" id="difficultyInput" min="0" step="0.001" value="1">
+              <br>
+              <label class="input-label" for="agentNumInput">Obstacle Number (optional):</label>
+              <input class="input-field" type="number" id="agentNumInput" placeholder="Enter obstacle number">
+              <br>
+              <label class="input-label" for="agentSizeInput">Obstacle Size (optional):</label>
+              <input class="input-field" type="number" id="agentSizeInput" placeholder="Enter obstacle size">
+              <br>
+              <label class="input-label" for="agentVelInput">Obstacle Velocity (optional):</label>
+              <input class="input-field" type="number" id="agentVelInput" placeholder="Enter obstacle velocity">
+              <br>
+              <button class="button" id="generateButton"">Generate</button>
+              <!-- <button id="generateButton">Generate Map</button> -->
+          </div>
+          <script src="https://unpkg.com/javascript-lp-solver/prod/solver.js"></script>
+          <script>
+              const canvas = document.getElementById("mapCanvas");
+              canvas.height = canvas.width;
+              const ctx = canvas.getContext("2d");
+              const circles = [];
+
+              function generateAnimation(difficulty) {
+                  const results = solveILP(difficulty);
+
+                  // Clear existing circles
+                  circles.length = 0;
+
+                  // Create new circles based on the ILP results
+                  for (let i = 0; i < results.number; i++) {
+                      const circle = {
+                          x: Math.random() * canvas.width,
+                          y: Math.random() * canvas.height,
+                          radius: results.size * canvas.width * 10 / 500,
+                          velocityX: results.velocity / 500 * canvas.width * (Math.random() > 0.5 ? 1 : -1),
+                          velocityY: results.velocity / 500 * canvas.width * (Math.random() > 0.5 ? 1 : -1),
+                      };
+                      circles.push(circle);
+                  }
+              }
+
+              function solveILP(difficulty) {
+                  const model = {
+                      "optimize": "z",
+                      "opType": "min",
+                      "constraints": {
+                          "ieq_num": { "min": 10, "max": 30 },
+                          "ieq_size": { "min": 0.5, "max": 1.5 },
+                          "ieq_vel": { "min": 2, "max": 6 },
+                          "ieq_z": { "min": 0 },
+                          "ieq1": { "min": -6.014 - difficulty },
+                          "ieq2": { "min": 6.014 + difficulty }
+                      },
+                      "variables": {
+                          "number": {
+                              "ieq_num": 1,
+                              "ieq1": -0.226,
+                              "ieq2": 0.226,
+                          },
+                          "size": {
+                              "ieq_size": 1,
+                              "ieq1": -2.646,
+                              "ieq2": 2.646,
+                          },
+                          "velocity": {
+                              "ieq_vel": 1,
+                              "ieq1": -1.104,
+                              "ieq2": 1.104
+                          },
+                          "z": { "ieq1": 1, "ieq2": 1, "ieq_z": 1 }
+                      },
+                      "ints": { "number": 1 }
+                  };
+
+                  return solver.Solve(model);
+              }
+
+              function draw() {
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                  circles.forEach(circle => {
+                      circle.x += circle.velocityX;
+                      circle.y += circle.velocityY;
+
+                      if (circle.x - circle.radius < 0 || circle.x + circle.radius > canvas.width) {
+                          circle.velocityX *= -1;
+                      }
+                      if (circle.y - circle.radius < 0 || circle.y + circle.radius > canvas.height) {
+                          circle.velocityY *= -1;
+                      }
+
+                      ctx.beginPath();
+                      ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+                      ctx.fillStyle = "blue";
+                      ctx.fill();
+                      ctx.closePath();
+                  });
+
+                  requestAnimationFrame(draw);
+              }
+
+              document.getElementById("generateButton").addEventListener("click", () => {
+                  const difficulty = parseFloat(document.getElementById("difficultyInput").value);
+                  generateAnimation(difficulty);
+              });
+
+              // Initial animation generation
+              generateAnimation(1);
+              draw();
+          </script>
+        </div>
       </div>
-      <div class="item">
-        <img src="static/images/carousel2.jpg" alt="MY ALT TEXT"/>
-        <h2 class="subtitle has-text-centered">
-          Second image description.
-        </h2>
-      </div>
-      <div class="item">
-        <img src="static/images/carousel3.jpg" alt="MY ALT TEXT"/>
-        <h2 class="subtitle has-text-centered">
-         Third image description.
-       </h2>
-     </div>
-     <div class="item">
-      <img src="static/images/carousel4.jpg" alt="MY ALT TEXT"/>
-      <h2 class="subtitle has-text-centered">
-        Fourth image description.
-      </h2>
     </div>
   </div>
-</div>
-</div>
-</section> -->
-<!-- End image carousel -->
-
+</section>
 
 
 
