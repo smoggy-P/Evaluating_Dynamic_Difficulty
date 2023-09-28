@@ -297,7 +297,18 @@
                       },
                       "ints": { "number": 1 }
                   };
-
+                  if (document.getElementById("agentNumInput").value) {
+                      model.constraints.ieq_num.min = parseInt(document.getElementById("agentNumInput").value);
+                      model.constraints.ieq_num.max = parseInt(document.getElementById("agentNumInput").value);
+                  }
+                  if (document.getElementById("agentSizeInput").value) {
+                      model.constraints.ieq_size.min = parseInt(document.getElementById("agentSizeInput").value);
+                      model.constraints.ieq_size.max = parseInt(document.getElementById("agentSizeInput").value);
+                  }
+                  if (document.getElementById("agentVelInput").value) {
+                      model.constraints.ieq_vel.min = parseInt(document.getElementById("agentVelInput").value);
+                      model.constraints.ieq_vel.max = parseInt(document.getElementById("agentVelInput").value);
+                  }
                   return solver.Solve(model);
               }
 
